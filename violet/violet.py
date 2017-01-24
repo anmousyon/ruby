@@ -36,7 +36,7 @@ def download_movies(bittorrent, movie_object):
     input: bittorrent client connection
     output: None
     '''
-    to_download = (movie_object.select().where(not movie_object.downloaded))
+    to_download = (movie_object.select().where(movie_object.downloaded == False))
     for movie in to_download:
         print(movie.title)
         bittorrent.download_from_link(movie.magnet_link)
@@ -65,6 +65,6 @@ def main():
     setup_database(movie_database, Movie)
     bittorrent = setup_bittorrent()
     while True:
-        download_movies(bittorrent, Movie)
+        download_movies(bittorrent, movie_database)
 
 main()
