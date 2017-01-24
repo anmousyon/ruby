@@ -130,6 +130,7 @@ def respond(socket, result)
     socket.print "\r\n"
     socket.print response
     socket.close
+
     return socket
 end
 
@@ -179,7 +180,6 @@ def main
             socket = respond(socket, check_all(movie_db, results, resolutions, encodings))
         end
 
-        respond(socket, false)
     end
 end
 
