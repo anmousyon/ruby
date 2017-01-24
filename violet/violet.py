@@ -25,7 +25,7 @@ def setup_bittorrent():
     input: None
     output: bittorrent client connection
     '''
-    bittorrent = Client('http://127.0.0.1:8080/')
+    bittorrent = Client('http://localhost:8080/')
     bittorrent.login('pavo', 'buffalo12')
     return bittorrent
 
