@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "violet",
+  "description": "Add torrent to download list",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "violet"
+  },
+  
+  "background":{
+    "scripts":["background.js"]
+  },
+
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ]
+}
