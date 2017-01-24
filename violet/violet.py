@@ -17,6 +17,7 @@ def setup_database(movie_database, movie):
     movie_database = SqliteExtDatabase('movies.db')
     movie_database.connect()
     movie_database.create_table(movie, safe=True)
+    return movie_database
 
 
 def setup_bittorrent():
@@ -51,6 +52,8 @@ def main():
     output: None
     '''
     movie_database = SqliteExtDatabase('movies.db')
+    movie_database.connect()
+    movie_database.create_table(movie, safe=True)
 
     class Movie(Model):
         '''movie object for database'''
@@ -62,9 +65,9 @@ def main():
             '''set database for the model'''
             database = movie_database
 
-    setup_database(movie_database, Movie)
+    # datbase = setup_database(movie_database, Movie)
     bittorrent = setup_bittorrent()
     while True:
-        download_movies(bittorrent, movie_database)
+        download_movies(bittorrent, Movie)
 
 main()
