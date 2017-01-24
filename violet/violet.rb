@@ -120,12 +120,12 @@ def respond(socket, result)
     output:
         None
     '''
-    if result
+    if result == true
         response = 'we got \'em'
     else
         response = 'sorry but I couldnt find it :/'
     end
-    socket.print "HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: #{response.bytesize}\r\n" + "COnnection: close\r\n"
+    socket.print "HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: #{response.bytesize}\r\n" + "Connection: close\r\n"
     socket.print "\r\n"
     socket.print response
     socket.close
