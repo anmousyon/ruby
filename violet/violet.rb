@@ -37,7 +37,7 @@ def setup_database
     '''
     db = Sequel.connect('sqlite://movies.db')
 
-    db.create_table? :movies do
+    db.create_table? :Movie do
         primary_key :id
         String :title
         String :name
@@ -46,7 +46,7 @@ def setup_database
         Boolean :downloaded
     end
 
-    movies = db[:movies]
+    movies = db[:Movie]
     return movies
 end
 
