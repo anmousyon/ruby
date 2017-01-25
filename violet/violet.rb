@@ -109,7 +109,7 @@ def main_setup
     '''
     rarbg = setup_rarbg
     movie_db = setup_database
-    server = TCPServer.new('47.184.15.16', 2345)
+    server = TCPServer.new('192.168.1.203', 2345)
     return rarbg, movie_db, server
 end
 
