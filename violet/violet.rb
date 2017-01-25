@@ -168,20 +168,18 @@ def main
     rarbg, movie_db, server = main_setup
 
     loop do
-        Thread.start(server.accept) do |socket|
-            socket = server.accept
+        socket = server.accept
 
-            movie_id = get_imdb_id(socket.gets)
+        movie_id = get_imdb_id(socket.gets)
 
-            puts movie_id
+        puts movie_id
 
-            resolutions = ["1080", "720"]
-            encodings = ["X264", "x264", "H264", "h264"]
+        resolutions = ["1080", "720"]
+        encodings = ["X264", "x264", "H264", "h264"]
 
-            if validate_id(movie_id) == true
-                results = search(rarbg, movie_id)
-                socket = respond(socket, check_all(movie_db, results, resolutions, encodings))
-            end
+        if validate_id(movie_id) == true
+            results = search(rarbg, movie_id)
+            socket = respond(socket, check_all(movie_db, results, resolutions, encodings))
         end
     end
 end
