@@ -76,6 +76,8 @@ def main():
     # datbase = setup_database(movie_database, Movie)
     bittorrent = setup_bittorrent()
     print('bittorrent has been setup')
+    for movie in Movie.select():
+        print(movie.name)
     while True:
         download_movies(bittorrent, Movie)
 
