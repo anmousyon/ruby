@@ -1,6 +1,7 @@
 require 'socket'
 require 'rarbg'
 require 'sequel'
+require 'filmbuff'
 
 def setup_rarbg
     '''
@@ -39,6 +40,8 @@ def setup_database
     db.create_table? :Movie do
         primary_key :id
         String :title
+        String :name
+        String :label
         String :magnet_link
         Boolean :downloaded
     end
@@ -47,7 +50,7 @@ def setup_database
     return movie_db
 end
 
-def check_wanted(movie_db, results, resolution, encoding)
+def check_wanted(movie_db, movie, results, resolution, encoding)
     '''
     check search results for specified movie
     input:
@@ -62,7 +65,7 @@ def check_wanted(movie_db, results, resolution, encoding)
         if res['filename'].include? "bluray" or res['filename'].include? "BluRay" or res['filename'].include? "BRRip"
             if res['filename'].include? resolution and res['filename'].include? encoding
                 puts 'inserting ' + res['filename']
-                movie_db.insert(:title => res['filename'], :magnet_link => res['download'], :downloaded => false)
+                movie_db.insert(:title => movie.title, :name => res['filename'], :label => movie.imdb_id, :magnet_link => res['download'], :downloaded => false)
                 return true
             end
         end
@@ -136,7 +139,7 @@ def respond(socket, result)
     return socket
 end
 
-def check_all(movie_db, results, resolutions, encodings)
+def check_all(movie_db, movie, results, resolutions, encodings)
     '''
     check search results for proper resolution and encodings
     input:
@@ -149,12 +152,18 @@ def check_all(movie_db, results, resolutions, encodings)
     '''
     for resolution in resolutions do
         for encoding in encodings do
-            if check_wanted(movie_db, results, resolution, encoding)
+            if check_wanted(movie_db, movie, results, resolution, encoding)
                 return true
             end
         end
     end
     return false
+end
+
+def imbd_search(id)
+    imbd = FilmBuff.new
+    movie = imdb.look_up_id('tt'+id)
+    return movie
 end
 
 def main
@@ -179,7 +188,7 @@ def main
 
         if validate_id(movie_id) == true
             results = search(rarbg, movie_id)
-            socket = respond(socket, check_all(movie_db, results, resolutions, encodings))
+            socket = respond(socket, check_all(movie_db, movie, results, resolutions, encodings))
         end
     end
 end

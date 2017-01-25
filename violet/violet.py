@@ -37,7 +37,7 @@ def download_movies(bittorrent, movie_object):
     input: bittorrent client connection
     output: None
     '''
-    to_download = (movie_object.select().where(movie_object.downloaded == False))
+    to_download = (movie_object.select().where(not movie_object.downloaded))
     for movie in to_download:
         print(movie.title)
         bittorrent.download_from_link(movie.magnet_link)
@@ -56,6 +56,8 @@ def main():
     class Movie(Model):
         '''movie object for database'''
         title = TextField()
+        name = TextField()
+        label = TextField()
         magnet_link = TextField()
         downloaded = BooleanField()
 
