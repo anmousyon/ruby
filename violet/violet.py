@@ -65,7 +65,7 @@ def main():
 
         class Meta:
             '''set database for the model'''
-            db = movie_database
+            database = movie_database
 
     movie_database.connect()
     print('connected to database')
