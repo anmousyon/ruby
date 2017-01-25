@@ -39,6 +39,7 @@ def download_movies(bittorrent, movie_object):
     '''
     to_download = (movie_object.select().where(not movie_object.downloaded))
     for movie in to_download:
+        print(movie.title)
         print(movie.name)
         bittorrent.download_from_link(movie.magnet_link)
         movie.downloaded = True
