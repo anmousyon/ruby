@@ -161,7 +161,7 @@ def check_all(movie_db, movie, results, resolutions, encodings)
 end
 
 def imbd_search(id)
-    imbd = FilmBuff.new
+    imdb = FilmBuff.new
     movie = imdb.look_up_id('tt'+id)
     return movie
 end
