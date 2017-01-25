@@ -38,6 +38,7 @@ def download_movies(bittorrent, movie_object):
     output: None
     '''
     to_download = (movie_object.select().where(not movie_object.downloaded))
+
     for movie in to_download:
         print(movie.title)
         print(movie.name)
@@ -64,13 +65,17 @@ def main():
 
         class Meta:
             '''set database for the model'''
-            database = movie_database
+            db = movie_database
 
     movie_database.connect()
+    print('connected to database')
+
     movie_database.create_table(Movie, safe=True)
+    print('created table')
 
     # datbase = setup_database(movie_database, Movie)
     bittorrent = setup_bittorrent()
+    print('bittorrent has been setup')
     while True:
         download_movies(bittorrent, Movie)
 
