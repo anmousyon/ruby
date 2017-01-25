@@ -37,7 +37,7 @@ def download_movies(bittorrent, movie_object):
     input: bittorrent client connection, movie object
     output: None
     '''
-    to_download = (movie_object.select().where(not movie_object.downloaded))
+    to_download = (movie_object.select().where(movie_object.downloaded == False))
 
     for movie in to_download:
         print(movie.title)
