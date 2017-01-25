@@ -59,10 +59,12 @@ def check_wanted(movie_db, results, resolution, encoding)
         boolean for success
     '''
     for res in results do
-        if res['filename'].include? resolution and res['filename'].include? encoding
-            puts 'inserting ' + res['filename']
-            movie_db.insert(:title => res['filename'], :magnet_link => res['download'], :downloaded => false)
-            return true
+        if res['filename'].include? "bluray" or res['filename'].include? "BluRay" or res['filename'].include? "BRRip"
+            if res['filename'].include? resolution and res['filename'].include? encoding
+                puts 'inserting ' + res['filename']
+                movie_db.insert(:title => res['filename'], :magnet_link => res['download'], :downloaded => false)
+                return true
+            end
         end
     end
     return false
@@ -107,7 +109,7 @@ def main_setup
     '''
     rarbg = setup_rarbg
     movie_db = setup_database
-    server = TCPServer.new('192.168.1.203', 2345)
+    server = TCPServer.new('47.184.15.16', 2345)
     return rarbg, movie_db, server
 end
 

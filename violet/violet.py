@@ -62,7 +62,7 @@ def main():
         class Meta:
             '''set database for the model'''
             database = movie_database
-    
+
     movie_database.connect()
     movie_database.create_table(Movie, safe=True)
 
