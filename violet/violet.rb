@@ -188,6 +188,7 @@ def main
 
         if validate_id(movie_id) == true
             results = search(rarbg, movie_id)
+            movie = imbd_search(movie_id)
             socket = respond(socket, check_all(movie_db, movie, results, resolutions, encodings))
         end
     end
