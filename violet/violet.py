@@ -34,7 +34,7 @@ def setup_bittorrent():
 def download_movies(bittorrent, movie_object):
     '''
     download all undownloaded movies in database
-    input: bittorrent client connection
+    input: bittorrent client connection, movie object
     output: None
     '''
     to_download = (movie_object.select().where(not movie_object.downloaded))

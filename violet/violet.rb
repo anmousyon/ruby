@@ -37,7 +37,7 @@ def setup_database
     '''
     db = Sequel.connect('sqlite://movies.db')
 
-    db.create_table? :Movie do
+    db.create_table? :movies do
         primary_key :id
         String :title
         String :name
@@ -46,8 +46,8 @@ def setup_database
         Boolean :downloaded
     end
 
-    movie_db = db[:Movie]
-    return movie_db
+    movies = db[:movies]
+    return movies
 end
 
 def check_wanted(movie_db, movie, results, resolution, encoding)
@@ -64,7 +64,8 @@ def check_wanted(movie_db, movie, results, resolution, encoding)
     for res in results do
         if res['filename'].include? "bluray" or res['filename'].include? "BluRay" or res['filename'].include? "BRRip"
             if res['filename'].include? resolution and res['filename'].include? encoding
-                puts 'inserting ' + res['filename']
+                puts 'inserting: ' + movie.title
+                puts 'filename: ' + res['filename']
                 movie_db.insert(:title => movie.title, :name => res['filename'], :label => movie.imdb_id, :magnet_link => res['download'], :downloaded => false)
                 return true
             end
