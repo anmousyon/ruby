@@ -65,8 +65,7 @@ def check_wanted(movie_db, movie, results, resolution, encoding)
     for res in results do
         if res['filename'].include? "bluray" or res['filename'].include? "BluRay" or res['filename'].include? "BRRip"
             if res['filename'].include? resolution and res['filename'].include? encoding
-                puts 'inserting: ' + movie.title
-                puts 'filename: ' + res['filename']
+                puts movie.title + " :: " + res['filename']
                 movie_db.insert(
                     :title => movie.title,
                     :name => res['filename'],
@@ -189,8 +188,6 @@ def main
         Thread.start(server.accept) do |socket|
             movie_id = get_imdb_id(socket.gets)
 
-            puts movie_id
-
             resolutions = ["1080", "720"]
             encodings = ["X264", "x264", "H264", "h264"]
 
@@ -208,6 +205,7 @@ def main
                     )
                 )
                 python_script = `python2.7 violet.py`
+                print("python script")
             end
         end
     end

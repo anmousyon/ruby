@@ -58,7 +58,7 @@ def main():
 
     bittorrent = setup_bittorrent()
 
-    print('starting download')
     download_movies(bittorrent, Movie)
+    return 'started download'
 
 main()
