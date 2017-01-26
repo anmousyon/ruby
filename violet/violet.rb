@@ -82,37 +82,36 @@ def main
 
     loop do
         #start a new thread for every request so it doesnt get clogged
-        Thread.start(server.accept) do |socket|
-            #get id of movie to download from url
-            imdb_id = (socket.gets)[5...-11]
+        socket = server.accept
+        #get id of movie to download from url
+        imdb_id = (socket.gets)[5...-11]
 
-            #formats: ordered best to worst
-            formats = {
-                :resolutions => ["1080", "720"],
-                :encodings => ["X264", "x264", "H264", "h264"],
-                :format_types => ['bluray', 'BluRay', 'BRRip']
-            }
+        #formats: ordered best to worst
+        formats = {
+            :resolutions => ["1080", "720"],
+            :encodings => ["X264", "x264", "H264", "h264"],
+            :format_types => ['bluray', 'BluRay', 'BRRip']
+        }
 
-            #check that imdb_id is all numbers and is exactly 7 digits long
-            if  not (imdb_id !~ /\D/ and imdb_id.length == 7)
-                next
-            end
-
-            #search rarbg using imdb id
-            torrents = rarbg.search_imdb(imdb_id)
-            
-            #search imdb using imdb id
-            movie = imdb.look_up_id('tt' + id)
-
-            #find best result and start download if successful
-            added = find_best(database, movie, torrents, formats)
-
-            #respond to request
-            socket = respond(socket, added)
-
-            #run python script to start download in qbittorrent
-            python_script = `python2.7 violet.py`
+        #check that imdb_id is all numbers and is exactly 7 digits long
+        if  not (imdb_id !~ /\D/ and imdb_id.length == 7)
+            next
         end
+
+        #search rarbg using imdb id
+        torrents = rarbg.search_imdb(imdb_id)
+        
+        #search imdb using imdb id
+        movie = imdb.look_up_id('tt' + id)
+
+        #find best result and start download if successful
+        added = find_best(database, movie, torrents, formats)
+
+        #respond to request
+        socket = respond(socket, added)
+
+        #run python script to start download in qbittorrent
+        python_script = `python2.7 violet.py`
     end
 end
 
