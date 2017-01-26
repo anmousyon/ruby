@@ -55,6 +55,7 @@ def check_wanted(movie_db, movie, results, resolution, encoding)
     check search results for specified movie
     input:
         movie database
+        movie dict
         search results
         resolution
         encoding
@@ -66,7 +67,13 @@ def check_wanted(movie_db, movie, results, resolution, encoding)
             if res['filename'].include? resolution and res['filename'].include? encoding
                 puts 'inserting: ' + movie.title
                 puts 'filename: ' + res['filename']
-                movie_db.insert(:title => movie.title, :name => res['filename'], :label => movie.imdb_id, :magnet_link => res['download'], :downloaded => false)
+                movie_db.insert(
+                    :title => movie.title,
+                    :name => res['filename'],
+                    :label => movie.imdb_id,
+                    :magnet_link => res['download'],
+                    :downloaded => false
+                )
                 return true
             end
         end
@@ -94,7 +101,7 @@ def validate_id(movie_id)
     output:
         boolean for success
     '''
-    if movie_id !~ /\D/
+    if movie_id !~ /\D/ and movie_id.length == 7
         return true
     else
         return false
@@ -145,6 +152,7 @@ def check_all(movie_db, movie, results, resolutions, encodings)
     check search results for proper resolution and encodings
     input:
         imdb id
+        movie dict
         search results
         wanted resolutions
         wanted encodings
@@ -178,19 +186,29 @@ def main
     rarbg, movie_db, server = main_setup
 
     loop do
-        socket = server.accept
+        Thread.start(server.accept) do |socket|
+            movie_id = get_imdb_id(socket.gets)
 
-        movie_id = get_imdb_id(socket.gets)
+            puts movie_id
 
-        puts movie_id
+            resolutions = ["1080", "720"]
+            encodings = ["X264", "x264", "H264", "h264"]
 
-        resolutions = ["1080", "720"]
-        encodings = ["X264", "x264", "H264", "h264"]
-
-        if validate_id(movie_id) == true
-            results = search(rarbg, movie_id)
-            movie = imbd_search(movie_id)
-            socket = respond(socket, check_all(movie_db, movie, results, resolutions, encodings))
+            if validate_id(movie_id) == true
+                results = search(rarbg, movie_id)
+                movie = imbd_search(movie_id)
+                socket = respond(
+                    socket,
+                    check_all(
+                        movie_db,
+                        movie,
+                        results,
+                        resolutions,
+                        encodings
+                    )
+                )
+                python_script = `python2.7 violet.py`
+            end
         end
     end
 end
