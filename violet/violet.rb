@@ -205,7 +205,7 @@ def main
                     )
                 )
                 python_script = `python2.7 violet.py`
-                print("python script")
+                puts python script
             end
         end
     end
