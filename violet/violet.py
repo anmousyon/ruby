@@ -1,5 +1,6 @@
 '''scans database for movies to downloadthen downloads movies in qbittorrent'''
 
+import time
 from qbittorrent import Client
 from peewee import Model, TextField, BooleanField
 from playhouse.sqlite_ext import SqliteExtDatabase
@@ -42,6 +43,8 @@ def main():
 
     bittorrent = setup_bittorrent()
 
-    download_movies(bittorrent, Movie)
+    while True:
+        download_movies(bittorrent, Movie)
+        time.sleep(60)
 
 main()

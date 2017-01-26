@@ -109,9 +109,6 @@ def main
 
         #respond to request
         socket = respond(socket, added)
-
-        #run python script to start download in qbittorrent
-        python_script = `python2.7 violet.py`
     end
 end
 
