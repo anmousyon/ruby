@@ -1,31 +1,19 @@
-'''
-scans database for movies to download
-downloads movies in qbittorrent
-'''
+'''scans database for movies to downloadthen downloads movies in qbittorrent'''
 
-import time
 from qbittorrent import Client
 from peewee import Model, TextField, BooleanField
 from playhouse.sqlite_ext import SqliteExtDatabase
 
 
 def setup_bittorrent():
-    '''
-    setup connection to bittorrent and login
-    input: None
-    output: bittorrent client connection
-    '''
+    '''setup connection to bittorrent and login'''
     bittorrent = Client('http://localhost:8080/')
     bittorrent.login('pavo', 'buffalo12')
     return bittorrent
 
 
 def download_movies(bittorrent, movie_object):
-    '''
-    download all undownloaded movies in database
-    input: bittorrent client connection, movie object
-    output: None
-    '''
+    '''download all undownloaded movies in database'''
     for movie in movie_object.select().where(movie_object.downloaded == False):
         print(movie.title + " :: " + movie.name)
         bittorrent.download_from_link(movie.magnet_link)
@@ -34,11 +22,7 @@ def download_movies(bittorrent, movie_object):
 
 
 def main():
-    '''
-    setup db, get connection to bittorrent, download movies
-    input: None
-    output: None
-    '''
+    '''setup db, get connection to bittorrent, download movies'''
     movie_database = SqliteExtDatabase('movies.db')
 
     class Movie(Model):
@@ -59,6 +43,5 @@ def main():
     bittorrent = setup_bittorrent()
 
     download_movies(bittorrent, Movie)
-    return 'started download'
 
 main()
