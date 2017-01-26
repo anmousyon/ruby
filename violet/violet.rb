@@ -102,7 +102,7 @@ def main
         torrents = rarbg.search_imdb(imdb_id)
         
         #search imdb using imdb id
-        movie = imdb.look_up_id('tt' + id)
+        movie = imdb.look_up_id('tt' + imdb_id)
 
         #find best result and start download if successful
         added = find_best(database, movie, torrents, formats)
