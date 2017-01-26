@@ -51,9 +51,9 @@ def good_enough(database, movie, torrents, resolution, encoding, format_type)
             puts movie.title + " :: " + res['filename']
             database.insert(
                 :title => movie.title,
-                :name => res['filename'],
+                :name => torrent['filename'],
                 :label => movie.imdb_id,
-                :magnet_link => res['download'],
+                :magnet_link => torrent['download'],
                 :downloaded => false
             )
             return true
