@@ -47,7 +47,7 @@ end
 
 def good_enough(database, movie, torrents, resolution, encoding, format_type)
     for torrent in torrents do
-        if torrent['filename'].include? resolution and torrent['filename'].include? encoding and torrent['filename'].inclue? format_type
+        if torrent['filename'].include? resolution and torrent['filename'].include? encoding and torrent['filename'].include? format_type
             puts movie.title + " :: " + res['filename']
             database.insert(
                 :title => movie.title,
