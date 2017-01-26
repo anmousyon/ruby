@@ -26,7 +26,7 @@ def download_movies(bittorrent, movie_object):
     input: bittorrent client connection, movie object
     output: None
     '''
-    for movie in movie_object.select().where(movie_object.downloaded is False):
+    for movie in movie_object.select().where(movie_object.downloaded == False):
         print(movie.title + " :: " + movie.name)
         bittorrent.download_from_link(movie.magnet_link)
         movie.downloaded = True
@@ -58,6 +58,7 @@ def main():
 
     bittorrent = setup_bittorrent()
 
+    print('starting download')
     download_movies(bittorrent, Movie)
 
 main()
