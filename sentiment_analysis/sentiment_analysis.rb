@@ -1,41 +1,16 @@
 require 'redd'
-require 'sequel'
+require 'mongo'
 require 'Sentimental'
 require 'set'
+require 'json'
 
-Db = Sequel.connect('sqlite://test.db')
+Client = Mongo::Client.new('mongodb://127.0.0.1:27017/submissions')
+Db = Client.database
 
 def get_dbs()
-    Db.create_table? :posts do
-        String :id
-        String :title
-        Float :title_sentiment
-        String :is_self
-        String :selftext
-        Float :selftext_sentiment
-        String :domain
-        String :subreddit
-        String :user
-        String :created
-        String :edited
-        Integer :score
-        Integer :gold
-        String :link
-    end
-
-    Db.create_table? :comments do
-        String :id
-        String :body
-        Float :body_sentiment
-        String :user
-        String :subreddit
-        String :created
-        String :edited
-        Integer :score
-        Integer :gold
-    end
-
-    return Db[:posts], Db[:comments]
+    Client[:posts].drop()
+    Client[:comments].drop()
+    return Client[:posts], Client[:comments]
 end
 
 Posts, Comments = get_dbs()
@@ -99,6 +74,7 @@ class Submission
     def add_to_db
         raise NotImplementedError
     end
+
 end
 
 class Post < Submission
@@ -109,25 +85,26 @@ class Post < Submission
         @domain = post.short_url
         @link = post.short_url
         @comments = post.comments
+        @data = {
+            id: @id,
+            title: @title,
+            title_sentiment: @title_sentiment,
+            is_self: @is_self,
+            selftext: @selftext,
+            selftext_sentiment: @selftext_sentiment,
+            domain: @domain,
+            subreddit: @subreddit,
+            user: @user,
+            created: @created,
+            edited: @edited,
+            score: @score,
+            gold: @gold,
+            link: @link
+        }
     end
 
     def add_to_db
-        Posts.insert(
-            :id => @id,
-            :title => @title,
-            :title_sentiment => @title_sentiment,
-            :is_self => @is_self,
-            :selftext => @selftext,
-            :selftext_sentiment => @selftext_sentiment,
-            :domain => @domain,
-            :subreddit => @subreddit,
-            :user => @user,
-            :created => @created,
-            :edited => @edited,
-            :score => @score,
-            :gold => @gold,
-            :link => @link
-        )
+        Posts.insert_one(@data)
         @comments.each{ |comment| add_comments_to_db(comment, Set.new([])) }
     end
 
@@ -150,7 +127,7 @@ class LinkPost < Post
         super(post)
         @is_self = "False"
         @selftext = ""
-        @selftext_sentiment = 0.0
+        @selftext_sentiment = "0"
     end
 end
 
@@ -168,21 +145,22 @@ class Comment < Submission
         super(comment)
         @body = comment.body
         @body_sentiment = get_sentiment(@body)
-        @replies = comment.replies
+        @data = {
+            id: @id,
+            body: @body,
+            body_sentiment: @body_sentiment,
+            subreddit: @subreddit,
+            user: @user,
+            created: @created,
+            edited: @edited,
+            score: @score,
+            gold: @gold,
+            link: @link
+        }
     end
 
     def add_to_db
-        Comments.insert(
-            :id => @id,
-            :body => @body,
-            :body_sentiment => @body_sentiment,
-            :subreddit => @subreddit,
-            :user => @user,
-            :created => @created,
-            :edited => @edited,
-            :score => @score,
-            :gold => @gold,
-        )
+        Comments.insert_one(@data)
     end
 end
 
@@ -190,9 +168,8 @@ def main()
     subreddit = Subreddit.new('all')
     subreddit.get_posts
     subreddit.add_to_db
-    Posts.each { |post| p post }
-    p "\n\n\n"
-    Comments.each{ |comment| p comment }
+    Posts.find.each { |post| puts post }
+    #Comments.each{ |comment| puts comment}
 end
 
 main()    
