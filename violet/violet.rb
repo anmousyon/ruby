@@ -13,7 +13,7 @@ def main_setup
     database = setup_database
     server = TCPServer.new('192.168.1.203', 2345)
     imdb = FilmBuff.new
-    return rarbg, movie_db, server, imdb
+    return rarbg, database, server, imdb
 end
 
 def setup_database
