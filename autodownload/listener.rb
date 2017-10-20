@@ -11,7 +11,7 @@ def main_setup
         'min_seeders' => 1
     )
     database = setup_database
-    server = TCPServer.new('192.168.1.203', 2345)
+    server = TCPServer.new('192.168.1.214', 2345)
     imdb = FilmBuff.new
     return rarbg, database, server, imdb
 end
